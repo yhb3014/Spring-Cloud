@@ -12,4 +12,9 @@ public class Controller {
     public String check() {
         return "service2";
     }
+
+    @GetMapping("/check2")
+    public String check2() {
+        return "feign test";
+    }
 }
