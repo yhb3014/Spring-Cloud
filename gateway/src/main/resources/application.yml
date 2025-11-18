@@ -6,30 +6,40 @@ spring:
     name: gateway
   cloud:
     gateway:
-      routes:
-        - id: service1
-          uri: lb://SERVICE1
-          predicates:
-            - Path=/service1/**
-          filters:
-            - CustomFilter
+      server:
+        webflux:
+          routes:
+            - id: service1
+              uri: lb://SERVICE1
+              predicates:
+                - Path=/service1/**
+              filters:
+                - CustomFilter
 
-        - id: service2
-          uri: lb://SERVICE2
-          predicates:
-            - Path=/service2/**
+            - id: service2
+              uri: lb://SERVICE2
+              predicates:
+                - Path=/service2/**
 
 eureka:
   client:
     register-with-eureka: true
-    fetch-register: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
+    hostname: host.docker.internal
+    prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
+    metadata-map:
+      management.port: ${management.server.port}
+      management.context-path: /actuator
+
 management:
+  server:
+    port: 18080
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: health, info, prometheus

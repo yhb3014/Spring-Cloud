@@ -8,14 +8,22 @@ spring:
 eureka:
   client:
     register-with-eureka: true
-    fetch-register: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
+    hostname: host.docker.internal
+    prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
+    metadata-map:
+      management.port: ${management.server.port}
+      management.context-path: /actuator
+
 management:
+  server:
+    port: 18082
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: health, info, prometheus
